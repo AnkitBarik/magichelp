@@ -65,11 +65,11 @@ nt = np/2.
 
 N = nr*np*nt
 
-print("Nr,Nt,Np = %d,%d,%d" %(nr,nt,np))
+print(("Nr,Nt,Np = %d,%d,%d" %(nr,nt,np)))
 
 nPB = N*8./2**50
 
-print("Total memory required: %.2f PB" %nPB)
+print(("Total memory required: %.2f PB" %nPB))
 
 minc = 1
                                                                                 
@@ -79,5 +79,5 @@ lm_max = m_max*(l_max+1)/minc-m_max*(m_max-minc)/(2*minc)+(l_max+1-m_max)
 
 nPBspec = nr * lm_max * 8./2**50
 
-print("Total memory required in spectral space: %.2f PB" %nPBspec)
+print(("Total memory required in spectral space: %.2f PB" %nPBspec))
 

@@ -79,9 +79,9 @@ l = zeros([len(rM),len(ro)])
 #rM = [1.6]
 
 for rIt in range(len(rM)):
-    print "r < ",rM[rIt]
-    print "------------"
-    for i in progressbar(range(len(dirs))):
+    print("r < ",rM[rIt])
+    print("------------")
+    for i in progressbar(list(range(len(dirs)))):
 
         os.chdir(dirs[i] + '/Graph')
 

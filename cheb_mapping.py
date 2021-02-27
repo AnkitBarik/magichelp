@@ -52,7 +52,7 @@ mapping='bay'
 
 x = get_grid(ri,ro,nr,mapping=mapping)
 
-print get_blPts(ek,ri,ro,nr,mapping=mapping)
+print(get_blPts(ek,ri,ro,nr,mapping=mapping))
 
 figure(figsize=(16,9))
 

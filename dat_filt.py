@@ -51,7 +51,7 @@ def filt(dat_r,dat_t,dat_p,lmax = None, lCut = 10, filt_type='high'):
     elif filt_type == 'low':
         mask = sh.l <= lCut
     else:
-        print 'Filter type must be "high" or "low"'
+        print('Filter type must be "high" or "low"')
         exit()
 
     Q1[:,mask] = Q[:,mask]
@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
     vr,vt,vp = filt(G.vr, G.vtheta, G.vphi)
 
-    print vr
-    print vt
-    print vp
+    print(vr)
+    print(vt)
+    print(vp)
 
