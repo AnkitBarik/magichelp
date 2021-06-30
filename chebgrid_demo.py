@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 
 from pylab import *
@@ -21,14 +21,14 @@ ri = eta/(1-eta)
 ro = 1./(1-eta)
 
 r = chebgrid(nr,ri,ro)
-theta, gauss = legendre2.legendre.gauleg(ntheta)
+theta, gauss = legendre.legendre.gauleg(ntheta)
 
 figure(figsize=(5.5,10))
 plotSliceOutline(r,theta)
 for k in range(nr):
 
     plot(r[k]*sin(theta),r[k]*cos(theta),'k:')
-    plot(r[k]*sin(theta[ntheta/4]),r[k]*cos(theta[ntheta/4]),'o',color='#1f77b4')
+    plot(r[k]*sin(theta[ntheta//4]),r[k]*cos(theta[ntheta//4]),'o',color='#1f77b4')
     
 axis('off')
 tight_layout()
@@ -54,5 +54,5 @@ for j in range(ntheta):
 
 axis('off')
 tight_layout()
-savefig('GridLines.pdf',dpi=400)
-#show()
+#savefig('GridLines.pdf',dpi=400)
+show()
