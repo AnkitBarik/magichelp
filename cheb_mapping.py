@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: iso-8859-15 -*-
 
 from pylab import *
@@ -48,13 +48,17 @@ ri = a/(1.-a)
 ro = 1./(1.-a)
 
 nr = 101
-mapping='bay'
+
+figure(figsize=(16,9))
+
+subplot(3,1,1)
+
+mapping='default'
 
 x = get_grid(ri,ro,nr,mapping=mapping)
 
-print(get_blPts(ek,ri,ro,nr,mapping=mapping))
+print((get_blPts(ek,ri,ro,nr,mapping=mapping)))
 
-figure(figsize=(16,9))
 
 plot(x,ones_like(x),'o')
 
@@ -63,4 +67,43 @@ d = sqrt(ek)
 axvline(x=ri+d,color='k')
 axvline(x=ro-d,color='k')
 
+title(mapping,fontsize=30)
+
+subplot(3,1,2)
+
+mapping='bay'
+
+x = get_grid(ri,ro,nr,mapping=mapping)
+
+print((get_blPts(ek,ri,ro,nr,mapping=mapping)))
+
+
+plot(x,ones_like(x),'o')
+
+d = sqrt(ek)
+
+axvline(x=ri+d,color='k')
+axvline(x=ro-d,color='k')
+title(mapping,fontsize=30)
+
+
+subplot(3,1,3)
+
+mapping='ktl'
+
+x = get_grid(ri,ro,nr,mapping=mapping)
+
+print((get_blPts(ek,ri,ro,nr,mapping=mapping)))
+
+
+plot(x,ones_like(x),'o')
+
+d = sqrt(ek)
+
+axvline(x=ri+d,color='k')
+axvline(x=ro-d,color='k')
+
+title(mapping,fontsize=30)
+
+tight_layout()
 show()
