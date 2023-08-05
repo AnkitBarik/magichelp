@@ -2,11 +2,10 @@
 
 from magic import *
 import numpy as np
-from getcurl import curlVec
 import os
 
 
-class getnl(MagicSetup):
+class Nonlin(MagicSetup):
     def __init__(
         self,
         ivar=None,
@@ -55,12 +54,12 @@ class getnl(MagicSetup):
         # Velocity derivatives #
         ########################
 
-        if self.term == "bgradu" or self.term == "curluxb" or self.term == "ugradu":
+        if self.term in ["bgradu" , "ugradu"]:
 
             # r
             ###
 
-            if self.comp == "r" or self.comp == "tot" or self.comp == "all":
+            if self.comp in ["r","all"]:
 
                 self.durdr = rderavg(self.gr.vr, rad=self.gr.radius, exclude=False)
                 self.durdt = (1.0 / r3D) * thetaderavg(self.gr.vr, order=4)
@@ -69,7 +68,7 @@ class getnl(MagicSetup):
             # theta
             #######
 
-            if self.comp == "theta" or self.comp == "tot" or self.comp == "all":
+            if self.comp in ["theta","all"]:
 
                 self.dutdr = rderavg(self.gr.vtheta, rad=self.gr.radius, exclude=False)
                 self.dutdt = (1.0 / r3D) * thetaderavg(self.gr.vtheta, order=4)
@@ -78,7 +77,7 @@ class getnl(MagicSetup):
             # phi
             #####
 
-            if self.comp == "phi" or self.comp == "tot" or self.comp == "all":
+            if self.comp in ["phi","all"]:
 
                 self.dupdr = rderavg(self.gr.vphi, rad=self.gr.radius, exclude=False)
                 self.dupdt = (1.0 / r3D) * thetaderavg(self.gr.vphi, order=4)
@@ -90,12 +89,12 @@ class getnl(MagicSetup):
         # Magnetic field derivatives #
         ##############################
 
-        if self.term == "ugradb" or self.term == "curluxb":
+        if self.term == "ugradb":
 
             # r
             ###
 
-            if self.comp == "r" or self.comp == "all":
+            if self.comp in ["r","all"]:
 
                 self.dbrdr = rderavg(self.gr.Br, rad=self.gr.radius, exclude=False)
                 self.dbrdt = (1.0 / r3D) * thetaderavg(self.gr.Br, order=4)
@@ -104,7 +103,7 @@ class getnl(MagicSetup):
             # theta
             #######
 
-            if self.comp == "theta" or self.comp == "all":
+            if self.comp in ["theta","all"]:
 
                 self.dbtdr = rderavg(self.gr.Btheta, rad=self.gr.radius, exclude=False)
                 self.dbtdt = (1.0 / r3D) * thetaderavg(self.gr.Btheta, order=4)
@@ -113,7 +112,7 @@ class getnl(MagicSetup):
             # phi
             #####
 
-            if self.comp == "phi" or self.comp == "all":
+            if self.comp in ["phi","all"]:
 
                 self.dbpdr = rderavg(self.gr.Bphi, rad=self.gr.radius, exclude=False)
                 self.dbpdt = (1.0 / r3D) * thetaderavg(self.gr.Bphi, order=4)
@@ -125,7 +124,7 @@ class getnl(MagicSetup):
 
         if self.term == "bgradu":
 
-            if self.comp == "r" or self.comp == "all":
+            if self.comp in ["r","all"]:
                 self.bgradu_r = (
                     self.gr.Br * self.durdr
                     + self.gr.Btheta * self.durdt
@@ -133,7 +132,7 @@ class getnl(MagicSetup):
                     - ( (self.gr.Btheta * self.gr.vtheta + self.gr.Bphi * self.gr.vphi)/r3D )
                 )
 
-            if self.comp == "theta" or self.comp == "all":
+            if self.comp in ["theta","all"]:
                 self.bgradu_t = (
                     self.gr.Br * self.dutdr
                     + self.gr.Btheta * self.dutdt
@@ -142,7 +141,7 @@ class getnl(MagicSetup):
                     - ((self.gr.Bphi * self.gr.vphi) / (r3D * np.tan(th3D)))
                 )
 
-            if self.comp == "phi" or self.comp == "all":
+            if self.comp in ["phi","all"]:
                 self.bgradu_p = (
                     self.gr.Br * self.dupdr
                     + self.gr.Btheta * self.dupdt
@@ -157,7 +156,7 @@ class getnl(MagicSetup):
 
         if self.term == "ugradb":
 
-            if self.comp == "r" or self.comp == "all":
+            if self.comp in ["r","all"]:
                 self.ugradb_r = (
                     self.gr.vr * self.dbrdr
                     + self.gr.vtheta * self.dbrdt
@@ -165,7 +164,7 @@ class getnl(MagicSetup):
                     - ( (self.gr.vtheta * self.gr.Btheta + self.gr.vphi * self.gr.Bphi)/r3D )
                 )
 
-            if self.comp == "theta" or self.comp == "all":
+            if self.comp in ["theta","all"]:
                 self.ugradb_t = (
                     self.gr.vr * self.dbtdr
                     + self.gr.vtheta * self.dbtdt
@@ -174,7 +173,7 @@ class getnl(MagicSetup):
                     - ((self.gr.vphi * self.gr.Bphi) / (r3D * np.tan(th3D)))
                 )
 
-            if self.comp == "phi" or self.comp == "all":
+            if self.comp in ["phi","all"]:
                 self.ugradb_p = (
                     self.gr.vr * self.dbpdr
                     + self.gr.vtheta * self.dbpdt
@@ -183,17 +182,6 @@ class getnl(MagicSetup):
                     + (self.gr.vphi * self.gr.Btheta) / (r3D * np.tan(th3D))
                 )
 
-        #################
-        #   curl(UxB)   #
-        #################
-
-        if self.term == "curluxb":
-            uxb_r = -self.gr.Btheta * self.gr.vphi + self.gr.Bphi * self.gr.vtheta
-            uxb_t =  self.gr.Br     * self.gr.vphi - self.gr.Bphi * self.gr.vr
-            uxb_p =  self.gr.Btheta * self.gr.vr   - self.gr.Br   * self.gr.vtheta
-
-            self.curluxb_r, self.curluxb_t, self.curluxb_p = curlVec(uxb_r,uxb_t,uxb_p,
-                                                                     r3D, th3D, self.gr.radius)
 
         #################
         #   U.grad U    #
@@ -201,7 +189,7 @@ class getnl(MagicSetup):
 
         if self.term == "ugradu":
 
-            if self.comp == "r" or self.comp == "all":
+            if self.comp in ["r","all"]:
                 self.ugradu_r = (
                     self.gr.vr * self.durdr
                     + self.gr.vtheta * self.durdt
@@ -210,7 +198,7 @@ class getnl(MagicSetup):
                     )
                 )
 
-            if self.comp == "theta" or self.comp == "all":
+            if self.comp in ["theta","all"]:
                 self.ugradu_t = (
                     self.gr.vr * self.dutdr
                     + self.gr.vtheta * self.dutdt
@@ -218,40 +206,13 @@ class getnl(MagicSetup):
                     - ((self.gr.vphi * self.gr.vphi) / (r3D * np.tan(th3D)))
                 )
 
-            if self.comp == "phi" or self.comp == "all":
+            if self.comp in ["phi","all"]:
                 self.ugradu_p = (
                     self.gr.vr * self.dupdr
                     + self.gr.vtheta * self.dupdt
                     + self.gr.vphi * self.dupdp
                     + (self.gr.vphi * self.gr.vr) / r3D
                     + (self.gr.vphi * self.gr.vtheta) / (r3D * np.tan(th3D))
-                )
-
-            if self.comp == "tot":
-                self.ugradu_r = (
-                    self.gr.vr * self.durdr
-                    + self.gr.vtheta * self.durdt
-                    + self.gr.vphi * self.durdp
-                    - (
-                        (self.gr.vtheta * self.gr.vtheta + self.gr.vphi * self.gr.vphi)
-                        / r3D
-                    )
-                )
-                self.ugradu_t = (
-                    self.gr.vr * self.dutdr
-                    + self.gr.vtheta * self.dutdt
-                    + self.gr.vphi * self.dutdp
-                    - ((self.gr.vphi * self.gr.vphi) / (r3D * np.tan(th3D)))
-                )
-                self.ugradu_p = (
-                    self.gr.vr * self.dupdr
-                    + self.gr.vtheta * self.dupdt
-                    + self.gr.vphi * self.dupdp
-                    + (self.gr.vphi * self.gr.vr) / r3D
-                    + (self.gr.vphi * self.gr.vtheta) / (r3D * np.tan(th3D))
-                )
-                self.ugradu_tot = np.sqrt(
-                    self.ugradu_r ** 2 + self.ugradu_t ** 2 + self.ugradu_p ** 2
                 )
 
         #####################
@@ -262,21 +223,13 @@ class getnl(MagicSetup):
 
             fac = 2.0 / self.ek
 
-            if self.comp == "r" or self.comp == "all":
+            if self.comp in ["r","all"]:
                 self.cor_r = fac * self.gr.vphi * np.sin(th3D)
-            if self.comp == "theta" or self.comp == "all":
+            if self.comp in ["theta","all"]:
                 self.cor_t = fac * self.gr.vphi * np.cos(th3D)
-            if self.comp == "phi" or self.comp == "all":
-                self.cor_p = -fac * (
-                    self.gr.vtheta * np.cos(th3D) + self.gr.vr * np.sin(th3D)
-                )
-            if self.comp == "tot":
-                self.cor_r = fac * self.gr.vphi * np.sin(th3D)
-                self.cor_t = fac * self.gr.vphi * np.cos(th3D)
-                self.cor_p = -fac * (
-                    self.gr.vtheta * np.cos(th3D) + self.gr.vr * np.sin(th3D)
-                )
-                self.cor_tot = np.sqrt(self.cor_r ** 2 + self.cor_t ** 2 + self.cor_p ** 2)
+            if self.comp in ["phi","all"]:
+                self.cor_p = -fac * ( self.gr.vtheta * np.cos(th3D)
+                                    + self.gr.vr * np.sin(th3D) )
 
         #####################
         #  Pressure gradient#
@@ -284,13 +237,11 @@ class getnl(MagicSetup):
 
         if self.term == "pressure":
 
-            if self.comp == "r" or self.comp == "all":
-                self.dpdr = -rderavg(
-                    self.gr.pre, rad=self.gr.radius, exclude=False
-                )
-            if self.comp == "theta" or self.comp == "all":
+            if self.comp in ["r","all"]:
+                self.dpdr = -rderavg(self.gr.pre, rad=self.gr.radius, exclude=False)
+            if self.comp in ["theta","all"]:
                 self.dpdt = -(1.0 / r3D) * thetaderavg(self.gr.pre, order=4)
-            if self.comp == "phi" or self.comp == "all":
+            if self.comp in ["phi","all"]:
                 self.dpdp = -(1.0 / (r3D * np.sin(th3D))) * phideravg(self.gr.pre, order=4)
 
     # def surf(
